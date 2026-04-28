@@ -1,0 +1,5 @@
+[
+  { "pattern": ".*GHC-58481.*", "label": "parse_error" },
+  { "pattern": ".*GHC-83865.*", "label": "type_error" },
+  { "pattern": ".*GHC-88464.*", "label": "type_error" }
+]
