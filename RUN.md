@@ -1,9 +1,19 @@
 This file explation how to recreate the experiment. It generates solutions in the chosen languages with the specified LLMs. If you run all files then you will get the generated solutions, all data for the tables and plots used in the paper.
 
+
+### Download and extract data 
+
+All data can be found in the release v1.0 in this repo. Download it and run:
+```bash
+./unpack_results.sh
+```
+This will extract and place the data under the right folders. If you want to re-run all the files and generate new data, follow the steps in the subsequent section.
+
+
 ### Run the LLMs for agents and baselines
 
 Generate the solution for each task in all tasks with the settings in ollama_server.yaml, where the programming languages, models and servers are specified.
-In these the LLMs have access to iteartive compiler feedback for the chosen language and generates candidate solutions unitl either the number of iterations hit the max value of 5 or the solution candidate compiles.
+In these the LLMs have access to iteartive compiler feedback for the chosen language and generates candidate solutions unitl either the number of iterations hit the max value of 5 or the solution candidate compiles. If the data already exist the genration will not generate new data.
 
 ```bash
 python3 main_agentc.py --settings_file settings/ollama_server.yaml
