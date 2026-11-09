@@ -1,0 +1,319 @@
+{
+  "query": {
+    "language": "Ada",
+    "model": "gpt-5.4",
+    "task": "Sort-using-a-custom-comparator",
+    "contains": false
+  },
+  "runs": [
+    {
+      "language": "Ada",
+      "model": "gpt-5.4",
+      "task": "Sort-using-a-custom-comparator",
+      "task_description": "{{Sorting Algorithm}}\n{{omit from|BBC BASIC}}\n\n;Task:\nSort an array (or list) of strings in order of descending length, and in ascending lexicographic order for strings of equal length. \n\nUse a sorting facility provided by the language/library, combined with your own callback comparison function.\n\n\n'''Note:'''   Lexicographic order is case-insensitive.\n\nINPUT\n- The program is ONLY executed as <program> <string> \n\nOUTPUT:\n- Output ONLY the sorted list:\n<sorted list>",
+      "agent": {
+        "found": true,
+        "n_iterations": 2,
+        "iterations": [
+          {
+            "iteration": 0,
+            "code": "with Ada.Command_Line;\nwith Ada.Text_IO;\nwith Ada.Containers.Vectors;\nwith Ada.Strings.Unbounded;\nwith Ada.Characters.Handling;\n\nprocedure Main is\n   package US renames Ada.Strings.Unbounded;\n   package CH renames Ada.Characters.Handling;\n\n   package String_Vectors is new Ada.Containers.Vectors\n     (Index_Type   => Positive,\n      Element_Type => US.Unbounded_String);\n\n   use Ada.Command_Line;\n   use Ada.Text_IO;\n   use String_Vectors;\n\n   function Less (Left, Right : US.Unbounded_String) return Boolean is\n      Ls : constant String := US.To_String (Left);\n      Rs : constant String := US.To_String (Right);\n\n      function To_Lower_String (S : String) return String is\n         R : String (S'Range);\n      begin\n         for I in S'Range loop\n            R (I) := CH.To_Lower (S (I));\n         end loop;\n         return R;\n      end To_Lower_String;\n\n      Ll : constant Natural := Ls'Length;\n      Rl : constant Natural := Rs'Length;\n   begin\n      if Ll /= Rl then\n         return Ll > Rl;\n      else\n         return To_Lower_String (Ls) < To_Lower_String (Rs);\n      end if;\n   end Less;\n\n   procedure Sort is new String_Vectors.Generic_Sorting (Before => Less);\n\n   V : Vector;\nbegin\n   for I in 1 .. Argument_Count loop\n      V.Append (US.To_Unbounded_String (Argument (I)));\n   end loop;\n\n   Sort (V);\n\n   for I in V.First_Index .. V.Last_Index loop\n      Put_Line (US.To_String (V (I)));\n   end loop;\nend Main;",
+            "raw_output": "with Ada.Command_Line;\nwith Ada.Text_IO;\nwith Ada.Containers.Vectors;\nwith Ada.Strings.Unbounded;\nwith Ada.Characters.Handling;\n\nprocedure Main is\n   package US renames Ada.Strings.Unbounded;\n   package CH renames Ada.Characters.Handling;\n\n   package String_Vectors is new Ada.Containers.Vectors\n     (Index_Type   => Positive,\n      Element_Type => US.Unbounded_String);\n\n   use Ada.Command_Line;\n   use Ada.Text_IO;\n   use String_Vectors;\n\n   function Less (Left, Right : US.Unbounded_String) return Boolean is\n      Ls : constant String := US.To_String (Left);\n      Rs : constant String := US.To_String (Right);\n\n      function To_Lower_String (S : String) return String is\n         R : String (S'Range);\n      begin\n         for I in S'Range loop\n            R (I) := CH.To_Lower (S (I));\n         end loop;\n         return R;\n      end To_Lower_String;\n\n      Ll : constant Natural := Ls'Length;\n      Rl : constant Natural := Rs'Length;\n   begin\n      if Ll /= Rl then\n         return Ll > Rl;\n      else\n         return To_Lower_String (Ls) < To_Lower_String (Rs);\n      end if;\n   end Less;\n\n   procedure Sort is new String_Vectors.Generic_Sorting (Before => Less);\n\n   V : Vector;\nbegin\n   for I in 1 .. Argument_Count loop\n      V.Append (US.To_Unbounded_String (Argument (I)));\n   end loop;\n\n   Sort (V);\n\n   for I in V.First_Index .. V.Last_Index loop\n      Put_Line (US.To_String (V (I)));\n   end loop;\nend Main;",
+            "compiled": false,
+            "compile_result": "Compilation error: x86_64-linux-gnu-gcc-13 -c -Itemp/ -I- temp/temp_code.adb\ntemp_code.adb:7:11: warning: file name does not match unit name, should be \"main.adb\" [enabled by default]\ntemp_code.adb:11:04: error: instantiation error at a-convec.ads:65\ntemp_code.adb:11:04: error: no visible subprogram matches the specification for \"=\"\ntemp_code.adb:11:04: error: instantiation error at a-convec.ads:65\ntemp_code.adb:11:04: error: default \"=\" on \"Unbounded_String\" is not directly visible\ntemp_code.adb:42:40: error: \"Generic_Sorting\" is not the name of a generic procedure\ntemp_code.adb:50:04: error: \"Sort\" is not visible\ntemp_code.adb:50:04: error: non-visible declaration at a-convec.ads:692\ngnatmake: \"temp/temp_code.adb\" compilation error\n",
+            "error_texts": [
+              "instantiation error at a-convec.ads:65",
+              "no visible subprogram matches the specification for \"=\"",
+              "instantiation error at a-convec.ads:65",
+              "default \"=\" on \"Unbounded_String\" is not directly visible",
+              "\"Generic_Sorting\" is not the name of a generic procedure",
+              "\"Sort\" is not visible",
+              "non-visible declaration at a-convec.ads:692"
+            ],
+            "error_types": [
+              "instantiation_error",
+              "no_visible_subprogram",
+              "instantiation_error",
+              "invisible_entity",
+              "unknown_compiler_error",
+              "invisible_entity",
+              "non_visible_declaration"
+            ],
+            "error_categories": [
+              "Language specific",
+              "Type mismatch",
+              "Language specific",
+              "Semantic",
+              "Other",
+              "Semantic",
+              "Semantic"
+            ],
+            "primary_error_type": "instantiation_error",
+            "primary_category": "Language specific",
+            "test_result": "PASSED",
+            "test_data": "{'test_1': 'PASSED', 'test_2': 'PASSED'}",
+            "diff_from_previous": null,
+            "similarity_to_previous": null,
+            "identical_to_previous": null
+          },
+          {
+            "iteration": 1,
+            "code": "with Ada.Command_Line;\nwith Ada.Text_IO;\nwith Ada.Containers.Vectors;\nwith Ada.Strings.Unbounded;\nwith Ada.Characters.Handling;\n\nprocedure Main is\n   package US renames Ada.Strings.Unbounded;\n   package CH renames Ada.Characters.Handling;\n\n   package String_Vectors is new Ada.Containers.Vectors\n     (Index_Type   => Positive,\n      Element_Type => US.Unbounded_String,\n      \"=\"          => US.\"=\");\n\n   use Ada.Command_Line;\n   use Ada.Text_IO;\n   use String_Vectors;\n\n   function Less (Left, Right : US.Unbounded_String) return Boolean is\n      Ls : constant String := US.To_String (Left);\n      Rs : constant String := US.To_String (Right);\n\n      function To_Lower_String (S : String) return String is\n         R : String (S'Range);\n      begin\n         for I in S'Range loop\n            R (I) := CH.To_Lower (S (I));\n         end loop;\n         return R;\n      end To_Lower_String;\n\n      Ll : constant Natural := Ls'Length;\n      Rl : constant Natural := Rs'Length;\n   begin\n      if Ll /= Rl then\n         return Ll > Rl;\n      else\n         return To_Lower_String (Ls) < To_Lower_String (Rs);\n      end if;\n   end Less;\n\n   package Sorting is new String_Vectors.Generic_Sorting (\"<\" => Less);\n\n   V : Vector;\nbegin\n   for I in 1 .. Argument_Count loop\n      V.Append (US.To_Unbounded_String (Argument (I)));\n   end loop;\n\n   Sorting.Sort (V);\n\n   if not V.Is_Empty then\n      for I in V.First_Index .. V.Last_Index loop\n         Put_Line (US.To_String (V (I)));\n      end loop;\n   end if;\nend Main;",
+            "raw_output": "```ada\nwith Ada.Command_Line;\nwith Ada.Text_IO;\nwith Ada.Containers.Vectors;\nwith Ada.Strings.Unbounded;\nwith Ada.Characters.Handling;\n\nprocedure Main is\n   package US renames Ada.Strings.Unbounded;\n   package CH renames Ada.Characters.Handling;\n\n   package String_Vectors is new Ada.Containers.Vectors\n     (Index_Type   => Positive,\n      Element_Type => US.Unbounded_String,\n      \"=\"          => US.\"=\");\n\n   use Ada.Command_Line;\n   use Ada.Text_IO;\n   use String_Vectors;\n\n   function Less (Left, Right : US.Unbounded_String) return Boolean is\n      Ls : constant String := US.To_String (Left);\n      Rs : constant String := US.To_String (Right);\n\n      function To_Lower_String (S : String) return String is\n         R : String (S'Range);\n      begin\n         for I in S'Range loop\n            R (I) := CH.To_Lower (S (I));\n         end loop;\n         return R;\n      end To_Lower_String;\n\n      Ll : constant Natural := Ls'Length;\n      Rl : constant Natural := Rs'Length;\n   begin\n      if Ll /= Rl then\n         return Ll > Rl;\n      else\n         return To_Lower_String (Ls) < To_Lower_String (Rs);\n      end if;\n   end Less;\n\n   package Sorting is new String_Vectors.Generic_Sorting (\"<\" => Less);\n\n   V : Vector;\nbegin\n   for I in 1 .. Argument_Count loop\n      V.Append (US.To_Unbounded_String (Argument (I)));\n   end loop;\n\n   Sorting.Sort (V);\n\n   if not V.Is_Empty then\n      for I in V.First_Index .. V.Last_Index loop\n         Put_Line (US.To_String (V (I)));\n      end loop;\n   end if;\nend Main;\n```",
+            "compiled": true,
+            "compile_result": "Compilation successful",
+            "error_texts": [],
+            "error_types": [],
+            "error_categories": [],
+            "primary_error_type": null,
+            "primary_category": "no_error",
+            "test_result": "PASSED",
+            "test_data": "{'test_1': 'PASSED', 'test_2': 'PASSED'}",
+            "diff_from_previous": "--- previous\n+++ current\n@@ -11,5 +11,6 @@\n    package String_Vectors is new Ada.Containers.Vectors\n      (Index_Type   => Positive,\n-      Element_Type => US.Unbounded_String);\n+      Element_Type => US.Unbounded_String,\n+      \"=\"          => US.\"=\");\n \n    use Ada.Command_Line;\n@@ -40,5 +41,5 @@\n    end Less;\n \n-   procedure Sort is new String_Vectors.Generic_Sorting (Before => Less);\n+   package Sorting is new String_Vectors.Generic_Sorting (\"<\" => Less);\n \n    V : Vector;\n@@ -48,8 +49,10 @@\n    end loop;\n \n-   Sort (V);\n+   Sorting.Sort (V);\n \n-   for I in V.First_Index .. V.Last_Index loop\n-      Put_Line (US.To_String (V (I)));\n-   end loop;\n+   if not V.Is_Empty then\n+      for I in V.First_Index .. V.Last_Index loop\n+         Put_Line (US.To_String (V (I)));\n+      end loop;\n+   end if;\n end Main;",
+            "similarity_to_previous": 0.9571,
+            "identical_to_previous": false
+          }
+        ],
+        "summary": {
+          "failed_at_iteration_0": true,
+          "first_compiled_iteration": 1,
+          "ever_compiled": true,
+          "final_compiled": true,
+          "final_test_result": "PASSED",
+          "passed": true,
+          "category_path": [
+            "Language specific",
+            "no_error"
+          ],
+          "error_type_path": [
+            "instantiation_error",
+            null
+          ],
+          "n_identical_resubmissions": 0
+        }
+      },
+      "baseline": {
+        "found": true,
+        "n_iterations": 5,
+        "iterations": [
+          {
+            "iteration": 0,
+            "code": "with Ada.Command_Line;\nwith Ada.Strings.Fixed;\nwith Ada.Strings.Unbounded;\nwith Ada.Containers.Vectors;\nwith Ada.Text_IO;\n\nprocedure Main is\n   package US renames Ada.Strings.Unbounded;\n   package SF renames Ada.Strings.Fixed;\n\n   package String_Vectors is new Ada.Containers.Vectors\n     (Index_Type   => Positive,\n      Element_Type => US.Unbounded_String);\n\n   use type US.Unbounded_String;\n   use type Ada.Containers.Count_Type;\n\n   function To_Lower (C : Character) return Character is\n   begin\n      if C in 'A' .. 'Z' then\n         return Character'Val (Character'Pos (C) + 32);\n      else\n         return C;\n      end if;\n   end To_Lower;\n\n   function Less (Left, Right : US.Unbounded_String) return Boolean is\n      L : constant String := US.To_String (Left);\n      R : constant String := US.To_String (Right);\n   begin\n      if L'Length /= R'Length then\n         return L'Length > R'Length;\n      else\n         declare\n            LL : String := L;\n            RR : String := R;\n         begin\n            SF.Translate (LL, To_Lower'Access);\n            SF.Translate (RR, To_Lower'Access);\n            return LL < RR;\n         end;\n      end if;\n   end Less;\n\n   procedure Sort is new String_Vectors.Generic_Sorting (\"<\" => Less);\n\n   V : String_Vectors.Vector;\nbegin\n   for I in 1 .. Ada.Command_Line.Argument_Count loop\n      V.Append (US.To_Unbounded_String (Ada.Command_Line.Argument (I)));\n   end loop;\n\n   Sort (V);\n\n   for I in V.First_Index .. V.Last_Index loop\n      Ada.Text_IO.Put_Line (US.To_String (V (I)));\n   end loop;\nend Main;",
+            "raw_output": "with Ada.Command_Line;\nwith Ada.Strings.Fixed;\nwith Ada.Strings.Unbounded;\nwith Ada.Containers.Vectors;\nwith Ada.Text_IO;\n\nprocedure Main is\n   package US renames Ada.Strings.Unbounded;\n   package SF renames Ada.Strings.Fixed;\n\n   package String_Vectors is new Ada.Containers.Vectors\n     (Index_Type   => Positive,\n      Element_Type => US.Unbounded_String);\n\n   use type US.Unbounded_String;\n   use type Ada.Containers.Count_Type;\n\n   function To_Lower (C : Character) return Character is\n   begin\n      if C in 'A' .. 'Z' then\n         return Character'Val (Character'Pos (C) + 32);\n      else\n         return C;\n      end if;\n   end To_Lower;\n\n   function Less (Left, Right : US.Unbounded_String) return Boolean is\n      L : constant String := US.To_String (Left);\n      R : constant String := US.To_String (Right);\n   begin\n      if L'Length /= R'Length then\n         return L'Length > R'Length;\n      else\n         declare\n            LL : String := L;\n            RR : String := R;\n         begin\n            SF.Translate (LL, To_Lower'Access);\n            SF.Translate (RR, To_Lower'Access);\n            return LL < RR;\n         end;\n      end if;\n   end Less;\n\n   procedure Sort is new String_Vectors.Generic_Sorting (\"<\" => Less);\n\n   V : String_Vectors.Vector;\nbegin\n   for I in 1 .. Ada.Command_Line.Argument_Count loop\n      V.Append (US.To_Unbounded_String (Ada.Command_Line.Argument (I)));\n   end loop;\n\n   Sort (V);\n\n   for I in V.First_Index .. V.Last_Index loop\n      Ada.Text_IO.Put_Line (US.To_String (V (I)));\n   end loop;\nend Main;",
+            "compiled": false,
+            "compile_result": "Compilation error: x86_64-linux-gnu-gcc-13 -c code_temp.adb\ncode_temp.adb:7:11: warning: file name does not match unit name, should be \"main.adb\" [enabled by default]\ncode_temp.adb:11:04: error: instantiation error at a-convec.ads:65\ncode_temp.adb:11:04: error: no visible subprogram matches the specification for \"=\"\ncode_temp.adb:11:04: error: instantiation error at a-convec.ads:65\ncode_temp.adb:11:04: error: default \"=\" on \"Unbounded_String\" is not directly visible\ncode_temp.adb:38:31: error: subprogram must not be deeper than access type\ncode_temp.adb:39:31: error: subprogram must not be deeper than access type\ncode_temp.adb:45:40: error: \"Generic_Sorting\" is not the name of a generic procedure\ncode_temp.adb:53:04: error: \"Sort\" is not visible\ncode_temp.adb:53:04: error: non-visible declaration at a-convec.ads:692\ngnatmake: \"code_temp.adb\" compilation error\n",
+            "error_texts": [
+              "instantiation error at a-convec.ads:65",
+              "no visible subprogram matches the specification for \"=\"",
+              "instantiation error at a-convec.ads:65",
+              "default \"=\" on \"Unbounded_String\" is not directly visible",
+              "subprogram must not be deeper than access type",
+              "subprogram must not be deeper than access type",
+              "\"Generic_Sorting\" is not the name of a generic procedure",
+              "\"Sort\" is not visible",
+              "non-visible declaration at a-convec.ads:692"
+            ],
+            "error_types": [
+              "instantiation_error",
+              "no_visible_subprogram",
+              "instantiation_error",
+              "invisible_entity",
+              "unknown_compiler_error",
+              "unknown_compiler_error",
+              "unknown_compiler_error",
+              "invisible_entity",
+              "non_visible_declaration"
+            ],
+            "error_categories": [
+              "Language specific",
+              "Type mismatch",
+              "Language specific",
+              "Semantic",
+              "Other",
+              "Other",
+              "Other",
+              "Semantic",
+              "Semantic"
+            ],
+            "primary_error_type": "instantiation_error",
+            "primary_category": "Language specific",
+            "test_result": "ERROR: No program found.",
+            "test_data": "{}",
+            "diff_from_previous": null,
+            "similarity_to_previous": null,
+            "identical_to_previous": null
+          },
+          {
+            "iteration": 1,
+            "code": "with Ada.Command_Line;\nwith Ada.Strings.Fixed;\nwith Ada.Strings.Maps;\nwith Ada.Strings.Unbounded;\nwith Ada.Containers.Vectors;\nwith Ada.Text_IO;\n\nprocedure Main is\n   package US renames Ada.Strings.Unbounded;\n   package SF renames Ada.Strings.Fixed;\n   package SM renames Ada.Strings.Maps;\n\n   package String_Vectors is new Ada.Containers.Vectors\n     (Index_Type   => Positive,\n      Element_Type => US.Unbounded_String);\n\n   use type US.Unbounded_String;\n   use type Ada.Containers.Count_Type;\n\n   function To_Lower (C : Character) return Character is\n   begin\n      if C in 'A' .. 'Z' then\n         return Character'Val (Character'Pos (C) + 32);\n      else\n         return C;\n      end if;\n   end To_Lower;\n\n   function Less (Left, Right : US.Unbounded_String) return Boolean is\n      L : constant String := US.To_String (Left);\n      R : constant String := US.To_String (Right);\n   begin\n      if L'Length /= R'Length then\n         return L'Length > R'Length;\n      else\n         declare\n            LL : String := L;\n            RR : String := R;\n            M  : constant SM.Character_Mapping := SM.To_Mapping\n              (From => \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\n               To   => \"abcdefghijklmnopqrstuvwxyz\");\n         begin\n            SF.Translate (LL, M);\n            SF.Translate (RR, M);\n            return LL < RR;\n         end;\n      end if;\n   end Less;\n\n   procedure Sort is new String_Vectors.Generic_Sorting (\"<\" => Less);\n\n   V : String_Vectors.Vector;\nbegin\n   for I in 1 .. Ada.Command_Line.Argument_Count loop\n      V.Append (US.To_Unbounded_String (Ada.Command_Line.Argument (I)));\n   end loop;\n\n   Sort (V);\n\n   if V.Length > 0 then\n      for I in V.First_Index .. V.Last_Index loop\n         Ada.Text_IO.Put_Line (US.To_String (V (I)));\n      end loop;\n   end if;\nend Main;",
+            "raw_output": "with Ada.Command_Line;\nwith Ada.Strings.Fixed;\nwith Ada.Strings.Maps;\nwith Ada.Strings.Unbounded;\nwith Ada.Containers.Vectors;\nwith Ada.Text_IO;\n\nprocedure Main is\n   package US renames Ada.Strings.Unbounded;\n   package SF renames Ada.Strings.Fixed;\n   package SM renames Ada.Strings.Maps;\n\n   package String_Vectors is new Ada.Containers.Vectors\n     (Index_Type   => Positive,\n      Element_Type => US.Unbounded_String);\n\n   use type US.Unbounded_String;\n   use type Ada.Containers.Count_Type;\n\n   function To_Lower (C : Character) return Character is\n   begin\n      if C in 'A' .. 'Z' then\n         return Character'Val (Character'Pos (C) + 32);\n      else\n         return C;\n      end if;\n   end To_Lower;\n\n   function Less (Left, Right : US.Unbounded_String) return Boolean is\n      L : constant String := US.To_String (Left);\n      R : constant String := US.To_String (Right);\n   begin\n      if L'Length /= R'Length then\n         return L'Length > R'Length;\n      else\n         declare\n            LL : String := L;\n            RR : String := R;\n            M  : constant SM.Character_Mapping := SM.To_Mapping\n              (From => \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\n               To   => \"abcdefghijklmnopqrstuvwxyz\");\n         begin\n            SF.Translate (LL, M);\n            SF.Translate (RR, M);\n            return LL < RR;\n         end;\n      end if;\n   end Less;\n\n   procedure Sort is new String_Vectors.Generic_Sorting (\"<\" => Less);\n\n   V : String_Vectors.Vector;\nbegin\n   for I in 1 .. Ada.Command_Line.Argument_Count loop\n      V.Append (US.To_Unbounded_String (Ada.Command_Line.Argument (I)));\n   end loop;\n\n   Sort (V);\n\n   if V.Length > 0 then\n      for I in V.First_Index .. V.Last_Index loop\n         Ada.Text_IO.Put_Line (US.To_String (V (I)));\n      end loop;\n   end if;\nend Main;",
+            "compiled": false,
+            "compile_result": "Compilation error: x86_64-linux-gnu-gcc-13 -c code_temp.adb\ncode_temp.adb:8:11: warning: file name does not match unit name, should be \"main.adb\" [enabled by default]\ncode_temp.adb:13:04: error: instantiation error at a-convec.ads:65\ncode_temp.adb:13:04: error: no visible subprogram matches the specification for \"=\"\ncode_temp.adb:13:04: error: instantiation error at a-convec.ads:65\ncode_temp.adb:13:04: error: default \"=\" on \"Unbounded_String\" is not directly visible\ncode_temp.adb:50:40: error: \"Generic_Sorting\" is not the name of a generic procedure\ncode_temp.adb:58:04: error: \"Sort\" is not visible\ncode_temp.adb:58:04: error: non-visible declaration at a-convec.ads:692\ngnatmake: \"code_temp.adb\" compilation error\n",
+            "error_texts": [
+              "instantiation error at a-convec.ads:65",
+              "no visible subprogram matches the specification for \"=\"",
+              "instantiation error at a-convec.ads:65",
+              "default \"=\" on \"Unbounded_String\" is not directly visible",
+              "\"Generic_Sorting\" is not the name of a generic procedure",
+              "\"Sort\" is not visible",
+              "non-visible declaration at a-convec.ads:692"
+            ],
+            "error_types": [
+              "instantiation_error",
+              "no_visible_subprogram",
+              "instantiation_error",
+              "invisible_entity",
+              "unknown_compiler_error",
+              "invisible_entity",
+              "non_visible_declaration"
+            ],
+            "error_categories": [
+              "Language specific",
+              "Type mismatch",
+              "Language specific",
+              "Semantic",
+              "Other",
+              "Semantic",
+              "Semantic"
+            ],
+            "primary_error_type": "instantiation_error",
+            "primary_category": "Language specific",
+            "test_result": "ERROR: No program found.",
+            "test_data": "{}",
+            "diff_from_previous": "--- previous\n+++ current\n@@ -1,4 +1,5 @@\n with Ada.Command_Line;\n with Ada.Strings.Fixed;\n+with Ada.Strings.Maps;\n with Ada.Strings.Unbounded;\n with Ada.Containers.Vectors;\n@@ -8,4 +9,5 @@\n    package US renames Ada.Strings.Unbounded;\n    package SF renames Ada.Strings.Fixed;\n+   package SM renames Ada.Strings.Maps;\n \n    package String_Vectors is new Ada.Containers.Vectors\n@@ -35,7 +37,10 @@\n             LL : String := L;\n             RR : String := R;\n+            M  : constant SM.Character_Mapping := SM.To_Mapping\n+              (From => \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\n+               To   => \"abcdefghijklmnopqrstuvwxyz\");\n          begin\n-            SF.Translate (LL, To_Lower'Access);\n-            SF.Translate (RR, To_Lower'Access);\n+            SF.Translate (LL, M);\n+            SF.Translate (RR, M);\n             return LL < RR;\n          end;\n@@ -53,6 +58,8 @@\n    Sort (V);\n \n-   for I in V.First_Index .. V.Last_Index loop\n-      Ada.Text_IO.Put_Line (US.To_String (V (I)));\n-   end loop;\n+   if V.Length > 0 then\n+      for I in V.First_Index .. V.Last_Index loop\n+         Ada.Text_IO.Put_Line (US.To_String (V (I)));\n+      end loop;\n+   end if;\n end Main;",
+            "similarity_to_previous": 0.9076,
+            "identical_to_previous": false
+          },
+          {
+            "iteration": 2,
+            "code": "with Ada.Command_Line;\nwith Ada.Strings.Fixed;\nwith Ada.Strings.Maps;\nwith Ada.Strings.Unbounded;\nwith Ada.Containers.Vectors;\nwith Ada.Text_IO;\n\nprocedure Main is\n   package US renames Ada.Strings.Unbounded;\n   package SF renames Ada.Strings.Fixed;\n   package SM renames Ada.Strings.Maps;\n\n   package String_Vectors is new Ada.Containers.Vectors\n     (Index_Type   => Positive,\n      Element_Type => US.Unbounded_String);\n\n   use type Ada.Containers.Count_Type;\n\n   function Less (Left, Right : US.Unbounded_String) return Boolean is\n      L : constant String := US.To_String (Left);\n      R : constant String := US.To_String (Right);\n      M : constant SM.Character_Mapping := SM.To_Mapping\n        (From => \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\n         To   => \"abcdefghijklmnopqrstuvwxyz\");\n   begin\n      if L'Length /= R'Length then\n         return L'Length > R'Length;\n      else\n         declare\n            LL : constant String := SF.Translate (L, M);\n            RR : constant String := SF.Translate (R, M);\n         begin\n            return LL < RR;\n         end;\n      end if;\n   end Less;\n\n   package String_Sorting is new String_Vectors.Generic_Sorting;\n   V : String_Vectors.Vector;\nbegin\n   for I in 1 .. Ada.Command_Line.Argument_Count loop\n      V.Append (US.To_Unbounded_String (Ada.Command_Line.Argument (I)));\n   end loop;\n\n   String_Sorting.Sort (V, Less'Access);\n\n   if V.Length > 0 then\n      for I in V.First_Index .. V.Last_Index loop\n         Ada.Text_IO.Put_Line (US.To_String (V (I)));\n      end loop;\n   end if;\nend Main;",
+            "raw_output": "with Ada.Command_Line;\nwith Ada.Strings.Fixed;\nwith Ada.Strings.Maps;\nwith Ada.Strings.Unbounded;\nwith Ada.Containers.Vectors;\nwith Ada.Text_IO;\n\nprocedure Main is\n   package US renames Ada.Strings.Unbounded;\n   package SF renames Ada.Strings.Fixed;\n   package SM renames Ada.Strings.Maps;\n\n   package String_Vectors is new Ada.Containers.Vectors\n     (Index_Type   => Positive,\n      Element_Type => US.Unbounded_String);\n\n   use type Ada.Containers.Count_Type;\n\n   function Less (Left, Right : US.Unbounded_String) return Boolean is\n      L : constant String := US.To_String (Left);\n      R : constant String := US.To_String (Right);\n      M : constant SM.Character_Mapping := SM.To_Mapping\n        (From => \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\n         To   => \"abcdefghijklmnopqrstuvwxyz\");\n   begin\n      if L'Length /= R'Length then\n         return L'Length > R'Length;\n      else\n         declare\n            LL : constant String := SF.Translate (L, M);\n            RR : constant String := SF.Translate (R, M);\n         begin\n            return LL < RR;\n         end;\n      end if;\n   end Less;\n\n   package String_Sorting is new String_Vectors.Generic_Sorting;\n   V : String_Vectors.Vector;\nbegin\n   for I in 1 .. Ada.Command_Line.Argument_Count loop\n      V.Append (US.To_Unbounded_String (Ada.Command_Line.Argument (I)));\n   end loop;\n\n   String_Sorting.Sort (V, Less'Access);\n\n   if V.Length > 0 then\n      for I in V.First_Index .. V.Last_Index loop\n         Ada.Text_IO.Put_Line (US.To_String (V (I)));\n      end loop;\n   end if;\nend Main;",
+            "compiled": false,
+            "compile_result": "Compilation error: x86_64-linux-gnu-gcc-13 -c code_temp.adb\ncode_temp.adb:8:11: warning: file name does not match unit name, should be \"main.adb\" [enabled by default]\ncode_temp.adb:13:04: error: instantiation error at a-convec.ads:65\ncode_temp.adb:13:04: error: no visible subprogram matches the specification for \"=\"\ncode_temp.adb:13:04: error: instantiation error at a-convec.ads:65\ncode_temp.adb:13:04: error: default \"=\" on \"Unbounded_String\" is not directly visible\ncode_temp.adb:38:04: error: instantiation error at a-convec.ads:676\ncode_temp.adb:38:04: error: no visible subprogram matches the specification for \"<\"\ncode_temp.adb:45:18: error: too many arguments in call to \"String_Sorting.Sort\"\ngnatmake: \"code_temp.adb\" compilation error\n",
+            "error_texts": [
+              "instantiation error at a-convec.ads:65",
+              "no visible subprogram matches the specification for \"=\"",
+              "instantiation error at a-convec.ads:65",
+              "default \"=\" on \"Unbounded_String\" is not directly visible",
+              "instantiation error at a-convec.ads:676",
+              "no visible subprogram matches the specification for \"<\"",
+              "too many arguments in call to \"String_Sorting.Sort\""
+            ],
+            "error_types": [
+              "instantiation_error",
+              "no_visible_subprogram",
+              "instantiation_error",
+              "invisible_entity",
+              "instantiation_error",
+              "no_visible_subprogram",
+              "too_many_args"
+            ],
+            "error_categories": [
+              "Language specific",
+              "Type mismatch",
+              "Language specific",
+              "Semantic",
+              "Language specific",
+              "Type mismatch",
+              "Type mismatch"
+            ],
+            "primary_error_type": "instantiation_error",
+            "primary_category": "Language specific",
+            "test_result": "ERROR: No program found.",
+            "test_data": "{}",
+            "diff_from_previous": "--- previous\n+++ current\n@@ -15,19 +15,12 @@\n       Element_Type => US.Unbounded_String);\n \n-   use type US.Unbounded_String;\n    use type Ada.Containers.Count_Type;\n-\n-   function To_Lower (C : Character) return Character is\n-   begin\n-      if C in 'A' .. 'Z' then\n-         return Character'Val (Character'Pos (C) + 32);\n-      else\n-         return C;\n-      end if;\n-   end To_Lower;\n \n    function Less (Left, Right : US.Unbounded_String) return Boolean is\n       L : constant String := US.To_String (Left);\n       R : constant String := US.To_String (Right);\n+      M : constant SM.Character_Mapping := SM.To_Mapping\n+        (From => \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\n+         To   => \"abcdefghijklmnopqrstuvwxyz\");\n    begin\n       if L'Length /= R'Length then\n@@ -35,12 +28,7 @@\n       else\n          declare\n-            LL : String := L;\n-            RR : String := R;\n-            M  : constant SM.Character_Mapping := SM.To_Mapping\n-              (From => \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\n-               To   => \"abcdefghijklmnopqrstuvwxyz\");\n+            LL : constant String := SF.Translate (L, M);\n+            RR : constant String := SF.Translate (R, M);\n          begin\n-            SF.Translate (LL, M);\n-            SF.Translate (RR, M);\n             return LL < RR;\n          end;\n@@ -48,6 +36,5 @@\n    end Less;\n \n-   procedure Sort is new String_Vectors.Generic_Sorting (\"<\" => Less);\n-\n+   package String_Sorting is new String_Vectors.Generic_Sorting;\n    V : String_Vectors.Vector;\n begin\n@@ -56,5 +43,5 @@\n    end loop;\n \n-   Sort (V);\n+   String_Sorting.Sort (V, Less'Access);\n \n    if V.Length > 0 then",
+            "similarity_to_previous": 0.7673,
+            "identical_to_previous": false
+          },
+          {
+            "iteration": 3,
+            "code": "with Ada.Command_Line;\nwith Ada.Strings.Fixed;\nwith Ada.Strings.Maps;\nwith Ada.Strings.Unbounded;\nwith Ada.Containers;\nwith Ada.Containers.Vectors;\nwith Ada.Text_IO;\n\nprocedure Main is\n   package US renames Ada.Strings.Unbounded;\n   package SF renames Ada.Strings.Fixed;\n   package SM renames Ada.Strings.Maps;\n\n   package String_Vectors is new Ada.Containers.Vectors\n     (Index_Type   => Positive,\n      Element_Type => US.Unbounded_String);\n\n   use type Ada.Containers.Count_Type;\n\n   function Less (Left, Right : US.Unbounded_String) return Boolean is\n      L : constant String := US.To_String (Left);\n      R : constant String := US.To_String (Right);\n      M : constant SM.Character_Mapping := SM.To_Mapping\n        (From => \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\n         To   => \"abcdefghijklmnopqrstuvwxyz\");\n   begin\n      if L'Length /= R'Length then\n         return L'Length > R'Length;\n      else\n         declare\n            LL : constant String := SF.Translate (L, M);\n            RR : constant String := SF.Translate (R, M);\n         begin\n            return LL < RR;\n         end;\n      end if;\n   end Less;\n\n   package String_Sorting is new String_Vectors.Generic_Sorting (\"<\" => Less);\n\n   V : String_Vectors.Vector;\nbegin\n   for I in 1 .. Ada.Command_Line.Argument_Count loop\n      V.Append (US.To_Unbounded_String (Ada.Command_Line.Argument (I)));\n   end loop;\n\n   String_Sorting.Sort (V);\n\n   if V.Length > 0 then\n      for I in V.First_Index .. V.Last_Index loop\n         Ada.Text_IO.Put_Line (US.To_String (V (I)));\n      end loop;\n   end if;\nend Main;",
+            "raw_output": "with Ada.Command_Line;\nwith Ada.Strings.Fixed;\nwith Ada.Strings.Maps;\nwith Ada.Strings.Unbounded;\nwith Ada.Containers;\nwith Ada.Containers.Vectors;\nwith Ada.Text_IO;\n\nprocedure Main is\n   package US renames Ada.Strings.Unbounded;\n   package SF renames Ada.Strings.Fixed;\n   package SM renames Ada.Strings.Maps;\n\n   package String_Vectors is new Ada.Containers.Vectors\n     (Index_Type   => Positive,\n      Element_Type => US.Unbounded_String);\n\n   use type Ada.Containers.Count_Type;\n\n   function Less (Left, Right : US.Unbounded_String) return Boolean is\n      L : constant String := US.To_String (Left);\n      R : constant String := US.To_String (Right);\n      M : constant SM.Character_Mapping := SM.To_Mapping\n        (From => \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\n         To   => \"abcdefghijklmnopqrstuvwxyz\");\n   begin\n      if L'Length /= R'Length then\n         return L'Length > R'Length;\n      else\n         declare\n            LL : constant String := SF.Translate (L, M);\n            RR : constant String := SF.Translate (R, M);\n         begin\n            return LL < RR;\n         end;\n      end if;\n   end Less;\n\n   package String_Sorting is new String_Vectors.Generic_Sorting (\"<\" => Less);\n\n   V : String_Vectors.Vector;\nbegin\n   for I in 1 .. Ada.Command_Line.Argument_Count loop\n      V.Append (US.To_Unbounded_String (Ada.Command_Line.Argument (I)));\n   end loop;\n\n   String_Sorting.Sort (V);\n\n   if V.Length > 0 then\n      for I in V.First_Index .. V.Last_Index loop\n         Ada.Text_IO.Put_Line (US.To_String (V (I)));\n      end loop;\n   end if;\nend Main;",
+            "compiled": false,
+            "compile_result": "Compilation error: x86_64-linux-gnu-gcc-13 -c code_temp.adb\ncode_temp.adb:9:11: warning: file name does not match unit name, should be \"main.adb\" [enabled by default]\ncode_temp.adb:14:04: error: instantiation error at a-convec.ads:65\ncode_temp.adb:14:04: error: no visible subprogram matches the specification for \"=\"\ncode_temp.adb:14:04: error: instantiation error at a-convec.ads:65\ncode_temp.adb:14:04: error: default \"=\" on \"Unbounded_String\" is not directly visible\ngnatmake: \"code_temp.adb\" compilation error\n",
+            "error_texts": [
+              "instantiation error at a-convec.ads:65",
+              "no visible subprogram matches the specification for \"=\"",
+              "instantiation error at a-convec.ads:65",
+              "default \"=\" on \"Unbounded_String\" is not directly visible"
+            ],
+            "error_types": [
+              "instantiation_error",
+              "no_visible_subprogram",
+              "instantiation_error",
+              "invisible_entity"
+            ],
+            "error_categories": [
+              "Language specific",
+              "Type mismatch",
+              "Language specific",
+              "Semantic"
+            ],
+            "primary_error_type": "instantiation_error",
+            "primary_category": "Language specific",
+            "test_result": "ERROR: No program found.",
+            "test_data": "{}",
+            "diff_from_previous": "--- previous\n+++ current\n@@ -3,4 +3,5 @@\n with Ada.Strings.Maps;\n with Ada.Strings.Unbounded;\n+with Ada.Containers;\n with Ada.Containers.Vectors;\n with Ada.Text_IO;\n@@ -36,5 +37,6 @@\n    end Less;\n \n-   package String_Sorting is new String_Vectors.Generic_Sorting;\n+   package String_Sorting is new String_Vectors.Generic_Sorting (\"<\" => Less);\n+\n    V : String_Vectors.Vector;\n begin\n@@ -43,5 +45,5 @@\n    end loop;\n \n-   String_Sorting.Sort (V, Less'Access);\n+   String_Sorting.Sort (V);\n \n    if V.Length > 0 then",
+            "similarity_to_previous": 0.9836,
+            "identical_to_previous": false
+          },
+          {
+            "iteration": 4,
+            "code": "with Ada.Command_Line;\nwith Ada.Strings.Fixed;\nwith Ada.Strings.Maps;\nwith Ada.Strings.Unbounded;\nwith Ada.Containers;\nwith Ada.Containers.Vectors;\nwith Ada.Text_IO;\n\nprocedure Main is\n   package US renames Ada.Strings.Unbounded;\n   package SF renames Ada.Strings.Fixed;\n   package SM renames Ada.Strings.Maps;\n\n   package String_Vectors is new Ada.Containers.Vectors\n     (Index_Type   => Positive,\n      Element_Type => US.Unbounded_String);\n\n   use type Ada.Containers.Count_Type;\n\n   function Less (Left, Right : US.Unbounded_String) return Boolean is\n      L : constant String := US.To_String (Left);\n      R : constant String := US.To_String (Right);\n      M : constant SM.Character_Mapping := SM.To_Mapping\n        (From => \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\n         To   => \"abcdefghijklmnopqrstuvwxyz\");\n   begin\n      if L'Length /= R'Length then\n         return L'Length > R'Length;\n      else\n         declare\n            LL : constant String := SF.Translate (L, M);\n            RR : constant String := SF.Translate (R, M);\n         begin\n            return LL < RR;\n         end;\n      end if;\n   end Less;\n\n   package String_Sorting is new String_Vectors.Generic_Sorting (\"<\" => Less);\n\n   V : String_Vectors.Vector;\nbegin\n   for I in 1 .. Ada.Command_Line.Argument_Count loop\n      V.Append (US.To_Unbounded_String (Ada.Command_Line.Argument (I)));\n   end loop;\n\n   String_Sorting.Sort (V);\n\n   if V.Length > 0 then\n      for I in V.First_Index .. V.Last_Index loop\n         Ada.Text_IO.Put_Line (US.To_String (V (I)));\n      end loop;\n   end if;\nend Main;",
+            "raw_output": "with Ada.Command_Line;\nwith Ada.Strings.Fixed;\nwith Ada.Strings.Maps;\nwith Ada.Strings.Unbounded;\nwith Ada.Containers;\nwith Ada.Containers.Vectors;\nwith Ada.Text_IO;\n\nprocedure Main is\n   package US renames Ada.Strings.Unbounded;\n   package SF renames Ada.Strings.Fixed;\n   package SM renames Ada.Strings.Maps;\n\n   package String_Vectors is new Ada.Containers.Vectors\n     (Index_Type   => Positive,\n      Element_Type => US.Unbounded_String);\n\n   use type Ada.Containers.Count_Type;\n\n   function Less (Left, Right : US.Unbounded_String) return Boolean is\n      L : constant String := US.To_String (Left);\n      R : constant String := US.To_String (Right);\n      M : constant SM.Character_Mapping := SM.To_Mapping\n        (From => \"ABCDEFGHIJKLMNOPQRSTUVWXYZ\",\n         To   => \"abcdefghijklmnopqrstuvwxyz\");\n   begin\n      if L'Length /= R'Length then\n         return L'Length > R'Length;\n      else\n         declare\n            LL : constant String := SF.Translate (L, M);\n            RR : constant String := SF.Translate (R, M);\n         begin\n            return LL < RR;\n         end;\n      end if;\n   end Less;\n\n   package String_Sorting is new String_Vectors.Generic_Sorting (\"<\" => Less);\n\n   V : String_Vectors.Vector;\nbegin\n   for I in 1 .. Ada.Command_Line.Argument_Count loop\n      V.Append (US.To_Unbounded_String (Ada.Command_Line.Argument (I)));\n   end loop;\n\n   String_Sorting.Sort (V);\n\n   if V.Length > 0 then\n      for I in V.First_Index .. V.Last_Index loop\n         Ada.Text_IO.Put_Line (US.To_String (V (I)));\n      end loop;\n   end if;\nend Main;",
+            "compiled": false,
+            "compile_result": "Compilation error: x86_64-linux-gnu-gcc-13 -c code_temp.adb\ncode_temp.adb:9:11: warning: file name does not match unit name, should be \"main.adb\" [enabled by default]\ncode_temp.adb:14:04: error: instantiation error at a-convec.ads:65\ncode_temp.adb:14:04: error: no visible subprogram matches the specification for \"=\"\ncode_temp.adb:14:04: error: instantiation error at a-convec.ads:65\ncode_temp.adb:14:04: error: default \"=\" on \"Unbounded_String\" is not directly visible\ngnatmake: \"code_temp.adb\" compilation error\n",
+            "error_texts": [
+              "instantiation error at a-convec.ads:65",
+              "no visible subprogram matches the specification for \"=\"",
+              "instantiation error at a-convec.ads:65",
+              "default \"=\" on \"Unbounded_String\" is not directly visible"
+            ],
+            "error_types": [
+              "instantiation_error",
+              "no_visible_subprogram",
+              "instantiation_error",
+              "invisible_entity"
+            ],
+            "error_categories": [
+              "Language specific",
+              "Type mismatch",
+              "Language specific",
+              "Semantic"
+            ],
+            "primary_error_type": "instantiation_error",
+            "primary_category": "Language specific",
+            "test_result": "ERROR: No program found.",
+            "test_data": "{}",
+            "diff_from_previous": "",
+            "similarity_to_previous": 1.0,
+            "identical_to_previous": true
+          }
+        ],
+        "summary": {
+          "failed_at_iteration_0": true,
+          "first_compiled_iteration": null,
+          "ever_compiled": false,
+          "final_compiled": false,
+          "final_test_result": null,
+          "passed": false,
+          "category_path": [
+            "Language specific",
+            "Language specific",
+            "Language specific",
+            "Language specific",
+            "Language specific"
+          ],
+          "error_type_path": [
+            "instantiation_error",
+            "instantiation_error",
+            "instantiation_error",
+            "instantiation_error",
+            "instantiation_error"
+          ],
+          "n_identical_resubmissions": 1
+        }
+      }
+    }
+  ]
+}
