@@ -1,0 +1,86 @@
+{
+  "query": {
+    "language": "Rust",
+    "model": "codellama:34b",
+    "task": "Sorting-algorithms-Patience-sort",
+    "contains": false
+  },
+  "runs": [
+    {
+      "language": "Rust",
+      "model": "codellama:34b",
+      "task": "Sorting-algorithms-Patience-sort",
+      "task_description": "{{Sorting Algorithm}}\n\nSort an array of numbers (of any convenient size) into ascending order using   [[wp:Patience sorting|Patience sorting]].\n\n\nINPUT\n- The program is ONLY executed as <program> <array>\n- the array is comma-separated \n\nOUTPUT:\n- Output ONLY the sorted list:\n<sorted array>\n- the array is comma-separated\n",
+      "agent": {
+        "found": false,
+        "n_iterations": 0,
+        "iterations": [],
+        "summary": {},
+        "note": "no agent run in file: the agent's first attempt compiled (agent files contain only runs that failed at iteration 0)"
+      },
+      "baseline": {
+        "found": true,
+        "n_iterations": 2,
+        "iterations": [
+          {
+            "iteration": 0,
+            "code": "",
+            "raw_output": "error[E0597]: `main` function not found in crate `patience_sort`\n --> src/lib.rs:1:1\n  |\n1 | / crate::entrypoint!();\n2 | |\n3 | fn entrypoint() {\n4 |     let mut args = env::args();\n...  |\n10 | }\n  | --------------------- while parsing this file\n\nFor more information about this error, try `rustc --explain E0597`.\nerror: could not compile `patience_sort` due to previous error\n```",
+            "compiled": false,
+            "compile_result": "No code found",
+            "error_texts": [
+              "No code found"
+            ],
+            "error_types": [
+              "no_code_found"
+            ],
+            "error_categories": [
+              "Other"
+            ],
+            "primary_error_type": "no_code_found",
+            "primary_category": "Other",
+            "test_result": "ERROR: No program found.",
+            "test_data": "{}",
+            "diff_from_previous": null,
+            "similarity_to_previous": null,
+            "identical_to_previous": null
+          },
+          {
+            "iteration": 1,
+            "code": "fn main() {\n    let mut x = 5;\n    let y = &mut x;\n    *y += 1;\n    println!(\"x: {}\", x);\n}",
+            "raw_output": "```\nfn main() {\n    let mut x = 5;\n    let y = &mut x;\n    *y += 1;\n    println!(\"x: {}\", x);\n}\n```",
+            "compiled": true,
+            "compile_result": "Compilation successful",
+            "error_texts": [],
+            "error_types": [],
+            "error_categories": [],
+            "primary_error_type": null,
+            "primary_category": "no_error",
+            "test_result": "ERROR: No program found.",
+            "test_data": "{}",
+            "diff_from_previous": "--- previous\n+++ current\n@@ -0,0 +1,6 @@\n+fn main() {\n+    let mut x = 5;\n+    let y = &mut x;\n+    *y += 1;\n+    println!(\"x: {}\", x);\n+}",
+            "similarity_to_previous": 0.0,
+            "identical_to_previous": false
+          }
+        ],
+        "summary": {
+          "failed_at_iteration_0": true,
+          "first_compiled_iteration": 1,
+          "ever_compiled": true,
+          "final_compiled": true,
+          "final_test_result": "ERROR: No program found.",
+          "passed": false,
+          "category_path": [
+            "Other",
+            "no_error"
+          ],
+          "error_type_path": [
+            "no_code_found",
+            null
+          ],
+          "n_identical_resubmissions": 0
+        }
+      }
+    }
+  ]
+}

@@ -6,10 +6,7 @@ import evaluate
 import numpy as np
 import re
 import random
-import gc
-import torch
-#torch.cuda.set_per_process_memory_fraction(0.85, device=0)
-import code_bert_score
+import string
 import json
 import ast
 from pathlib import Path
@@ -23,7 +20,7 @@ class ModelEvaluation():
 
     def __init__(self, lang, model, eval_dir="eval", output_dir="output"):
 
-        self.temp_dir = f"temp/{lang}_{model}"
+        self.temp_dir = f"temp/{self.random_filename()}"
 
         if not os.path.exists('eval'):
             os.makedirs('eval')
@@ -40,9 +37,17 @@ class ModelEvaluation():
         self.output_dir = output_dir
 
 
+
+    def random_filename(self, length=8):
+        characters = string.ascii_letters + string.digits
+        return ''.join(random.choices(characters, k=length))
+
+
+
     def read_result_file(self, file_path):
         df = pd.read_csv(file_path)
         return df
+
 
 
     def get_code(self, code):
@@ -61,6 +66,7 @@ class ModelEvaluation():
             code = '\n'.join(code)
 
         return code
+
     
 
     def remove_leading_language_token(self,text: str) -> str:
@@ -85,6 +91,7 @@ class ModelEvaluation():
         return text
 
 
+
     def extract_code(self, markdown):
         '''This function extracts the C code from a markdown string.'''
         try: 
@@ -106,6 +113,7 @@ class ModelEvaluation():
             pass
         return ""
     
+
 
     def suggest_java_filename(self, source: str, include_package_path: bool = False, sep: str = "/") -> str:
         """
@@ -222,16 +230,16 @@ class ModelEvaluation():
                     f.write(code)
                 result = subprocess.run(['ghc', f'{temp_file_name}.hs', '-o', temp_file], stdout=subprocess.PIPE, stderr=subprocess.PIPE, cwd=self.temp_dir)
                 exe_file_name = f"./{temp_file}"
- 
             else:
                 return "Unsupported language", False, None, None
 
 
+ 
             # check if the output of the compilation contains the word "error"
             if b'error' in result.stderr:
-                compile_result_msg = f"Compilation error: {result.stderr.decode()}"
+                compile_result_msg = f"Compilation error: {result.stderr.decode('utf-8', errors='replace')}"
                 compile_result = False
-
+   
             else:
                 compile_result_msg = "Compilation successful"
                 compile_result = True
@@ -239,6 +247,7 @@ class ModelEvaluation():
             compile_result_msg = "No code found"
             compile_result = False   
             exe_file_name = None
+
 
         return compile_result_msg, compile_result, code, exe_file_name
 
@@ -305,7 +314,7 @@ class ModelEvaluation():
         #print(f"Compiled {nr_compiled} out of {nr_of_tasks} tasks.")
         #print(f"Passed {nr_passed_tests} tests out of {nr_of_tasks} tasks.")
         
-        print(f"{self.model} {self.lang} P/C/T: {nr_passed_tests}/{nr_compiled}/{nr_of_tasks}")
+        #print(f"{self.model} {self.lang} P/C/T: {nr_passed_tests}/{nr_compiled}/{nr_of_tasks}")
 
         #print("-----------------------------------------------------")
 
@@ -372,18 +381,9 @@ class ModelEvaluation():
                     cmd.extend(input_cmd)
 
                 try:
-                #if True:
-
-                    #print("Running command: ", cmd)
-
                     p_out = subprocess.run(cmd, capture_output=True, text=True, cwd=self.temp_dir, timeout=5)
 
-                    #print("RETURN RESULT: ", p_out)
                     output = p_out.stdout.strip()
-
-                    #print("TEST OUTPUT: ", output)
-                    #print("EXPECTED OUTPUT: ", test_outpot)
-                    #print([output, test_outpot])
 
                     output = self.clean_text(output)
                     test_outpot = self.clean_text(test_outpot)
@@ -417,13 +417,12 @@ class ModelEvaluation():
                 except Exception as e:
                     test_result = "ERROR"
                     test_data[test] = f"ERROR: {str(e)}"
-
-
-            #print(f"Test results: {test_data}")
-            self.reset_dir(self.temp_dir)
+            
         else:
             test_data = {}
             test_result = "ERROR: No program found."
+            
+        self.reset_dir(self.temp_dir)
 
         return test_result, test_data
 
@@ -446,11 +445,10 @@ class ModelEvaluation():
         nr_compiled = 0
         nr_passed_test = 0
 
-        test_cases = pd.read_excel("data/all_tasks_prerun.xlsx")
+        test_cases = pd.read_excel("data/all_tasks.xlsx")
 
         for index, row in df.iterrows():
 
-            #print(f"Evaluating task {index + 1}/{len(df)}: {row['Generated_code']} for model {row['Model']} in language {row['Language']}")
             task_name = row["Task_Name"]
             generated_code = row['Generated_code']
             language = row['Language']
@@ -460,7 +458,6 @@ class ModelEvaluation():
             self.store_compiled_result(task_name, compile_result)
 
             test_result, test_data = self.run_tests(test_cases, task_name, exe_file, language, compile_result)
-            #input()
 
             if compile_result:
                 nr_compiled += 1 
@@ -483,14 +480,13 @@ class ModelEvaluation():
 
             df_evaluated_result = pd.concat([df_evaluated_result, pd.DataFrame([data])], ignore_index=True)
 
-            #if (index + 1) % 5 == 0:
-                #print(f"Processed {index + 1}/{len(df)} tasks...")
-
         self.total_score(df_evaluated_result, nr_compiled, nr_of_tasks, nr_passed_test)
 
         df_evaluated_result.to_csv(eval_file_path, index=False)
         self.read_csv_to_excel(eval_file_path, eval_file_path.replace('.csv', '.xlsx'))
         return nr_compiled         
+
+
 
     def store_task_result(self, agents_str):
 
@@ -564,14 +560,9 @@ class ModelEvaluation():
             else:
                 print(f"No evaluation file found at {eval_file_path}. Skipping total score calculation.")
                 return None
-            
-
-        #print("\nFinal Results:")
-        #self.print_result(agents_str)
-        #print("\nEvaluation completed.")
-        #self.store_task_result(agents_str)
         
         shutil.rmtree(self.temp_dir)
+
 
 
     def read_csv_to_excel(self, file_path, excel_path):
@@ -581,17 +572,17 @@ class ModelEvaluation():
 
 
 
-def run_tests_model_lang(lang, model):
+def run_tests_model_lang(lang, model, LLM_type):
 
-    eval_dir = "eval_alvis_new"
-    output_dir = "output_alvis_new"
-    agent = True
+    if LLM_type == "baseline":
+        eval_dir = "eval_baseline"
+        output_dir = "output_baseline"
+        agent = False
+    else:
+        eval_dir = "eval_agent"
+        output_dir = "output_agent"
+        agent = True
 
-    #eval_dir = "eval_baseline_5_iterations"
-    #output_dir = "output_baseline_5_iterations"
-    #agent = False
-    
-    
     re_run = True
 
     ME = ModelEvaluation(lang, model, eval_dir, output_dir)
@@ -604,27 +595,29 @@ def main():
     languages = ["Java", "Python", "Ada", "C", "Haskell", "Rust"]
 
     models = ["phi4","deepseek-coder-v2:16b", "gemma3:12b", "gemma3:27b","codellama:34b", 
-              "gemma3:27b", "gpt-oss:20b", "llama3.3:70b", "deepseek-r1:70b", "qwen3:30b", "qwen3:32b", 
+              "gemma3:27b", "gpt-oss:20b", "llama3.3:70b", "deepseek-r1:70b", "qwen3:32b", 
               "qwen3-coder:30b","qwen3:8b","qwen3:4b","codellama:7b", "deepseek-r1:7b", 
-              "qwen3:14b", "gemma3:2b", "gpt-oss:120b", "gpt-5.4", "gpt-5.4-mini"]
-    
+              "qwen3:14b", "gpt-oss:120b", "gpt-5.4", "gpt-5.4-mini"]
+
     tasks = [(lang, model) for lang in languages for model in models]
     
     max_workers = os.cpu_count() or 4
 
-    with ProcessPoolExecutor(max_workers=max_workers) as executor:
-        futures = {
-            executor.submit(run_tests_model_lang, lang, model): (lang, model)
-            for lang, model in tasks
-        }
+    for LLM_type in ["baseline", "agent"]:
 
-        for future in as_completed(futures):
-            lang, model = futures[future]
-            try:
-                result = future.result()
-                print(f"Done: {lang} / {model}")
-            except Exception as e:
-                print(f"Failed: {lang} / {model}: {e}")
+        with ProcessPoolExecutor(max_workers=max_workers) as executor:
+            futures = {
+                executor.submit(run_tests_model_lang, lang, model, LLM_type): (lang, model)
+                for lang, model in tasks
+            }
+
+            for future in as_completed(futures):
+                lang, model = futures[future]
+                try:
+                    result = future.result()
+                    print(f"Done: {lang} / {model}")
+                except Exception as e:
+                    print(f"Failed: {lang} / {model}: {e}")
 
 
 if __name__ == "__main__":

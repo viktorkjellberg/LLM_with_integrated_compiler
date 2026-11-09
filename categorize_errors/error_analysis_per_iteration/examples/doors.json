@@ -1,0 +1,269 @@
+{
+  "query": {
+    "language": "Ada",
+    "model": "qwen3-coder:30b",
+    "task": "100-doors",
+    "contains": false
+  },
+  "runs": [
+    {
+      "language": "Ada",
+      "model": "qwen3-coder:30b",
+      "task": "100-doors",
+      "task_description": "There are 100 doors in a row that are all initially closed. \n\nYou make 100 passes by the doors. \n\nThe first time through, visit every door and ''toggle'' the door (if the door is closed, open it; if it is open, close it). \n\nThe second time, only visit every 2nd door (door #2, #4, #6, ...), and toggle it.  \n\nThe third time, visit every 3rd door (door #3, #6, #9, ...), etc, until you only visit the 100th door.\n\n\n;Task:\nAnswer the question: what state are the doors in after the last pass? Which are open, which are closed?\n\n\nINPUT\n-The program is ONLY executed as <program> \n\nOUTPUT:\n- Print EXACTLY one line per door \n- Each line MUST follow this exact pattern:\n<door number> <state>\n\n\n\n",
+      "agent": {
+        "found": true,
+        "n_iterations": 3,
+        "iterations": [
+          {
+            "iteration": 0,
+            "code": "procedure Doors is\n   type Door_Array is array (1..100) of Boolean;\n   Doors : Door_Array := (others => False);\nbegin\n   for Pass in 1..100 loop\n      for Door in 1..100 loop\n         if Door mod Pass = 0 then\n            Doors(Door) := not Doors(Door);\n         end if;\n      end loop;\n   end loop;\n   \n   for I in 1..100 loop\n      if Doors(I) then\n         Put_Line(I'Image & \" open\");\n      else\n         Put_Line(I'Image & \" closed\");\n      end if;\n   end loop;\nend Doors;",
+            "raw_output": "```ada\nprocedure Doors is\n   type Door_Array is array (1..100) of Boolean;\n   Doors : Door_Array := (others => False);\nbegin\n   for Pass in 1..100 loop\n      for Door in 1..100 loop\n         if Door mod Pass = 0 then\n            Doors(Door) := not Doors(Door);\n         end if;\n      end loop;\n   end loop;\n   \n   for I in 1..100 loop\n      if Doors(I) then\n         Put_Line(I'Image & \" open\");\n      else\n         Put_Line(I'Image & \" closed\");\n      end if;\n   end loop;\nend Doors;\n```",
+            "compiled": false,
+            "compile_result": "Compilation error: x86_64-linux-gnu-gcc-13 -c -Itemp/Ada_qwen3-coder:30b/ -I- temp/Ada_qwen3-coder:30b/temp_code.adb\ntemp_code.adb:1:11: warning: file name does not match unit name, should be \"doors.adb\" [enabled by default]\ntemp_code.adb:15:10: error: \"Put_Line\" is undefined (more references follow)\ntemp_code.adb:15:10: error: possible missing \"with Ada.Text_IO; use Ada.Text_IO\"\ngnatmake: \"temp/Ada_qwen3-coder:30b/temp_code.adb\" compilation error\n",
+            "error_texts": [
+              "\"Put_Line\" is undefined (more references follow)",
+              "possible missing \"with Ada.Text_IO; use Ada.Text_IO\""
+            ],
+            "error_types": [
+              "undefined_identifier",
+              "missing_dependency"
+            ],
+            "error_categories": [
+              "Dependency",
+              "Dependency"
+            ],
+            "primary_error_type": "undefined_identifier",
+            "primary_category": "Dependency",
+            "test_result": "PASSED",
+            "test_data": "{'test_1': 'PASSED', 'test_2': 'PASSED'}",
+            "diff_from_previous": null,
+            "similarity_to_previous": null,
+            "identical_to_previous": null
+          },
+          {
+            "iteration": 1,
+            "code": "procedure Doors is\n   type Door_Array is array (1..100) of Boolean;\n   Doors : Door_Array := (others => False);\nbegin\n   for Pass in 1..100 loop\n      for Door in 1..100 loop\n         if Door mod Pass = 0 then\n            Doors(Door) := not Doors(Door);\n         end if;\n      end loop;\n   end loop;\n   \n   for I in 1..100 loop\n      if Doors(I) then\n         Put_Line(I'Image & \" open\");\n      else\n         Put_Line(I'Image & \" closed\");\n      end if;\n   end loop;\nend Doors;",
+            "raw_output": "```ada\nprocedure Doors is\n   type Door_Array is array (1..100) of Boolean;\n   Doors : Door_Array := (others => False);\nbegin\n   for Pass in 1..100 loop\n      for Door in 1..100 loop\n         if Door mod Pass = 0 then\n            Doors(Door) := not Doors(Door);\n         end if;\n      end loop;\n   end loop;\n   \n   for I in 1..100 loop\n      if Doors(I) then\n         Put_Line(I'Image & \" open\");\n      else\n         Put_Line(I'Image & \" closed\");\n      end if;\n   end loop;\nend Doors;\n```",
+            "compiled": false,
+            "compile_result": "Compilation error: x86_64-linux-gnu-gcc-13 -c -Itemp/Ada_qwen3-coder:30b/ -I- temp/Ada_qwen3-coder:30b/temp_code.adb\ntemp_code.adb:1:11: warning: file name does not match unit name, should be \"doors.adb\" [enabled by default]\ntemp_code.adb:15:10: error: \"Put_Line\" is undefined (more references follow)\ntemp_code.adb:15:10: error: possible missing \"with Ada.Text_IO; use Ada.Text_IO\"\ngnatmake: \"temp/Ada_qwen3-coder:30b/temp_code.adb\" compilation error\n",
+            "error_texts": [
+              "\"Put_Line\" is undefined (more references follow)",
+              "possible missing \"with Ada.Text_IO; use Ada.Text_IO\""
+            ],
+            "error_types": [
+              "undefined_identifier",
+              "missing_dependency"
+            ],
+            "error_categories": [
+              "Dependency",
+              "Dependency"
+            ],
+            "primary_error_type": "undefined_identifier",
+            "primary_category": "Dependency",
+            "test_result": "PASSED",
+            "test_data": "{'test_1': 'PASSED', 'test_2': 'PASSED'}",
+            "diff_from_previous": "",
+            "similarity_to_previous": 1.0,
+            "identical_to_previous": true
+          },
+          {
+            "iteration": 2,
+            "code": "with Ada.Text_IO; use Ada.Text_IO;\n\nprocedure Doors is\n   type Door_Array is array (1..100) of Boolean;\n   Doors : Door_Array := (others => False);\nbegin\n   for Pass in 1..100 loop\n      for Door in 1..100 loop\n         if Door mod Pass = 0 then\n            Doors(Door) := not Doors(Door);\n         end if;\n      end loop;\n   end loop;\n   \n   for I in 1..100 loop\n      if Doors(I) then\n         Put_Line(I'Image & \" open\");\n      else\n         Put_Line(I'Image & \" closed\");\n      end if;\n   end loop;\nend Doors;",
+            "raw_output": "```ada\nwith Ada.Text_IO; use Ada.Text_IO;\n\nprocedure Doors is\n   type Door_Array is array (1..100) of Boolean;\n   Doors : Door_Array := (others => False);\nbegin\n   for Pass in 1..100 loop\n      for Door in 1..100 loop\n         if Door mod Pass = 0 then\n            Doors(Door) := not Doors(Door);\n         end if;\n      end loop;\n   end loop;\n   \n   for I in 1..100 loop\n      if Doors(I) then\n         Put_Line(I'Image & \" open\");\n      else\n         Put_Line(I'Image & \" closed\");\n      end if;\n   end loop;\nend Doors;\n```",
+            "compiled": true,
+            "compile_result": "Compilation successful",
+            "error_texts": [],
+            "error_types": [],
+            "error_categories": [],
+            "primary_error_type": null,
+            "primary_category": "no_error",
+            "test_result": "PASSED",
+            "test_data": "{'test_1': 'PASSED', 'test_2': 'PASSED'}",
+            "diff_from_previous": "--- previous\n+++ current\n@@ -1,2 +1,4 @@\n+with Ada.Text_IO; use Ada.Text_IO;\n+\n procedure Doors is\n    type Door_Array is array (1..100) of Boolean;",
+            "similarity_to_previous": 0.9636,
+            "identical_to_previous": false
+          }
+        ],
+        "summary": {
+          "failed_at_iteration_0": true,
+          "first_compiled_iteration": 2,
+          "ever_compiled": true,
+          "final_compiled": true,
+          "final_test_result": "PASSED",
+          "passed": true,
+          "category_path": [
+            "Dependency",
+            "Dependency",
+            "no_error"
+          ],
+          "error_type_path": [
+            "undefined_identifier",
+            "undefined_identifier",
+            null
+          ],
+          "n_identical_resubmissions": 1
+        }
+      },
+      "baseline": {
+        "found": true,
+        "n_iterations": 5,
+        "iterations": [
+          {
+            "iteration": 0,
+            "code": "procedure Doors is\n   type Door_Array is array (1..100) of Boolean;\n   Doors : Door_Array := (others => False);\nbegin\n   for Pass in 1..100 loop\n      for Door in 1..100 loop\n         if Door mod Pass = 0 then\n            Doors(Door) := not Doors(Door);\n         end if;\n      end loop;\n   end loop;\n   \n   for I in 1..100 loop\n      if Doors(I) then\n         Put_Line(I'Image & \" open\");\n      else\n         Put_Line(I'Image & \" closed\");\n      end if;\n   end loop;\nend Doors;",
+            "raw_output": "```ada\nprocedure Doors is\n   type Door_Array is array (1..100) of Boolean;\n   Doors : Door_Array := (others => False);\nbegin\n   for Pass in 1..100 loop\n      for Door in 1..100 loop\n         if Door mod Pass = 0 then\n            Doors(Door) := not Doors(Door);\n         end if;\n      end loop;\n   end loop;\n   \n   for I in 1..100 loop\n      if Doors(I) then\n         Put_Line(I'Image & \" open\");\n      else\n         Put_Line(I'Image & \" closed\");\n      end if;\n   end loop;\nend Doors;\n```",
+            "compiled": false,
+            "compile_result": "Compilation error: x86_64-linux-gnu-gcc-13 -c code_temp.adb\ncode_temp.adb:1:11: warning: file name does not match unit name, should be \"doors.adb\" [enabled by default]\ncode_temp.adb:15:10: error: \"Put_Line\" is undefined (more references follow)\ncode_temp.adb:15:10: error: possible missing \"with Ada.Text_IO; use Ada.Text_IO\"\ngnatmake: \"code_temp.adb\" compilation error\n",
+            "error_texts": [
+              "\"Put_Line\" is undefined (more references follow)",
+              "possible missing \"with Ada.Text_IO; use Ada.Text_IO\""
+            ],
+            "error_types": [
+              "undefined_identifier",
+              "missing_dependency"
+            ],
+            "error_categories": [
+              "Dependency",
+              "Dependency"
+            ],
+            "primary_error_type": "undefined_identifier",
+            "primary_category": "Dependency",
+            "test_result": "ERROR: No program found.",
+            "test_data": "{}",
+            "diff_from_previous": null,
+            "similarity_to_previous": null,
+            "identical_to_previous": null
+          },
+          {
+            "iteration": 1,
+            "code": "procedure Doors is\n   type Door_Array is array (1..100) of Boolean;\n   Doors : Door_Array := (others => False);\nbegin\n   for Pass in 1..100 loop\n      for Door in 1..100 loop\n         if Door mod Pass = 0 then\n            Doors(Door) := not Doors(Door);\n         end if;\n      end loop;\n   end loop;\n   \n   for I in 1..100 loop\n      if Doors(I) then\n         Put_Line(I'Image & \" open\");\n      else\n         Put_Line(I'Image & \" closed\");\n      end if;\n   end loop;\nend Doors;",
+            "raw_output": "procedure Doors is\n   type Door_Array is array (1..100) of Boolean;\n   Doors : Door_Array := (others => False);\nbegin\n   for Pass in 1..100 loop\n      for Door in 1..100 loop\n         if Door mod Pass = 0 then\n            Doors(Door) := not Doors(Door);\n         end if;\n      end loop;\n   end loop;\n   \n   for I in 1..100 loop\n      if Doors(I) then\n         Put_Line(I'Image & \" open\");\n      else\n         Put_Line(I'Image & \" closed\");\n      end if;\n   end loop;\nend Doors;",
+            "compiled": false,
+            "compile_result": "Compilation error: x86_64-linux-gnu-gcc-13 -c code_temp.adb\ncode_temp.adb:1:11: warning: file name does not match unit name, should be \"doors.adb\" [enabled by default]\ncode_temp.adb:15:10: error: \"Put_Line\" is undefined (more references follow)\ncode_temp.adb:15:10: error: possible missing \"with Ada.Text_IO; use Ada.Text_IO\"\ngnatmake: \"code_temp.adb\" compilation error\n",
+            "error_texts": [
+              "\"Put_Line\" is undefined (more references follow)",
+              "possible missing \"with Ada.Text_IO; use Ada.Text_IO\""
+            ],
+            "error_types": [
+              "undefined_identifier",
+              "missing_dependency"
+            ],
+            "error_categories": [
+              "Dependency",
+              "Dependency"
+            ],
+            "primary_error_type": "undefined_identifier",
+            "primary_category": "Dependency",
+            "test_result": "ERROR: No program found.",
+            "test_data": "{}",
+            "diff_from_previous": "",
+            "similarity_to_previous": 1.0,
+            "identical_to_previous": true
+          },
+          {
+            "iteration": 2,
+            "code": "procedure Doors is\n   type Door_Array is array (1..100) of Boolean;\n   Doors : Door_Array := (others => False);\nbegin\n   for Pass in 1..100 loop\n      for Door in 1..100 loop\n         if Door mod Pass = 0 then\n            Doors(Door) := not Doors(Door);\n         end if;\n      end loop;\n   end loop;\n   \n   for I in 1..100 loop\n      if Doors(I) then\n         Put_Line(I'Image & \" open\");\n      else\n         Put_Line(I'Image & \" closed\");\n      end if;\n   end loop;\nend Doors;",
+            "raw_output": "procedure Doors is\n   type Door_Array is array (1..100) of Boolean;\n   Doors : Door_Array := (others => False);\nbegin\n   for Pass in 1..100 loop\n      for Door in 1..100 loop\n         if Door mod Pass = 0 then\n            Doors(Door) := not Doors(Door);\n         end if;\n      end loop;\n   end loop;\n   \n   for I in 1..100 loop\n      if Doors(I) then\n         Put_Line(I'Image & \" open\");\n      else\n         Put_Line(I'Image & \" closed\");\n      end if;\n   end loop;\nend Doors;",
+            "compiled": false,
+            "compile_result": "Compilation error: x86_64-linux-gnu-gcc-13 -c code_temp.adb\ncode_temp.adb:1:11: warning: file name does not match unit name, should be \"doors.adb\" [enabled by default]\ncode_temp.adb:15:10: error: \"Put_Line\" is undefined (more references follow)\ncode_temp.adb:15:10: error: possible missing \"with Ada.Text_IO; use Ada.Text_IO\"\ngnatmake: \"code_temp.adb\" compilation error\n",
+            "error_texts": [
+              "\"Put_Line\" is undefined (more references follow)",
+              "possible missing \"with Ada.Text_IO; use Ada.Text_IO\""
+            ],
+            "error_types": [
+              "undefined_identifier",
+              "missing_dependency"
+            ],
+            "error_categories": [
+              "Dependency",
+              "Dependency"
+            ],
+            "primary_error_type": "undefined_identifier",
+            "primary_category": "Dependency",
+            "test_result": "ERROR: No program found.",
+            "test_data": "{}",
+            "diff_from_previous": "",
+            "similarity_to_previous": 1.0,
+            "identical_to_previous": true
+          },
+          {
+            "iteration": 3,
+            "code": "procedure Doors is\n   type Door_Array is array (1..100) of Boolean;\n   Doors : Door_Array := (others => False);\nbegin\n   for Pass in 1..100 loop\n      for Door in 1..100 loop\n         if Door mod Pass = 0 then\n            Doors(Door) := not Doors(Door);\n         end if;\n      end loop;\n   end loop;\n   \n   for I in 1..100 loop\n      if Doors(I) then\n         Put_Line(I'Image & \" open\");\n      else\n         Put_Line(I'Image & \" closed\");\n      end if;\n   end loop;\nend Doors;",
+            "raw_output": "procedure Doors is\n   type Door_Array is array (1..100) of Boolean;\n   Doors : Door_Array := (others => False);\nbegin\n   for Pass in 1..100 loop\n      for Door in 1..100 loop\n         if Door mod Pass = 0 then\n            Doors(Door) := not Doors(Door);\n         end if;\n      end loop;\n   end loop;\n   \n   for I in 1..100 loop\n      if Doors(I) then\n         Put_Line(I'Image & \" open\");\n      else\n         Put_Line(I'Image & \" closed\");\n      end if;\n   end loop;\nend Doors;",
+            "compiled": false,
+            "compile_result": "Compilation error: x86_64-linux-gnu-gcc-13 -c code_temp.adb\ncode_temp.adb:1:11: warning: file name does not match unit name, should be \"doors.adb\" [enabled by default]\ncode_temp.adb:15:10: error: \"Put_Line\" is undefined (more references follow)\ncode_temp.adb:15:10: error: possible missing \"with Ada.Text_IO; use Ada.Text_IO\"\ngnatmake: \"code_temp.adb\" compilation error\n",
+            "error_texts": [
+              "\"Put_Line\" is undefined (more references follow)",
+              "possible missing \"with Ada.Text_IO; use Ada.Text_IO\""
+            ],
+            "error_types": [
+              "undefined_identifier",
+              "missing_dependency"
+            ],
+            "error_categories": [
+              "Dependency",
+              "Dependency"
+            ],
+            "primary_error_type": "undefined_identifier",
+            "primary_category": "Dependency",
+            "test_result": "ERROR: No program found.",
+            "test_data": "{}",
+            "diff_from_previous": "",
+            "similarity_to_previous": 1.0,
+            "identical_to_previous": true
+          },
+          {
+            "iteration": 4,
+            "code": "procedure Doors is\n   type Door_Array is array (1..100) of Boolean;\n   Doors : Door_Array := (others => False);\nbegin\n   for Pass in 1..100 loop\n      for Door in 1..100 loop\n         if Door mod Pass = 0 then\n            Doors(Door) := not Doors(Door);\n         end if;\n      end loop;\n   end loop;\n   \n   for I in 1..100 loop\n      if Doors(I) then\n         Put_Line(I'Image & \" open\");\n      else\n         Put_Line(I'Image & \" closed\");\n      end if;\n   end loop;\nend Doors;",
+            "raw_output": "procedure Doors is\n   type Door_Array is array (1..100) of Boolean;\n   Doors : Door_Array := (others => False);\nbegin\n   for Pass in 1..100 loop\n      for Door in 1..100 loop\n         if Door mod Pass = 0 then\n            Doors(Door) := not Doors(Door);\n         end if;\n      end loop;\n   end loop;\n   \n   for I in 1..100 loop\n      if Doors(I) then\n         Put_Line(I'Image & \" open\");\n      else\n         Put_Line(I'Image & \" closed\");\n      end if;\n   end loop;\nend Doors;",
+            "compiled": false,
+            "compile_result": "Compilation error: x86_64-linux-gnu-gcc-13 -c code_temp.adb\ncode_temp.adb:1:11: warning: file name does not match unit name, should be \"doors.adb\" [enabled by default]\ncode_temp.adb:15:10: error: \"Put_Line\" is undefined (more references follow)\ncode_temp.adb:15:10: error: possible missing \"with Ada.Text_IO; use Ada.Text_IO\"\ngnatmake: \"code_temp.adb\" compilation error\n",
+            "error_texts": [
+              "\"Put_Line\" is undefined (more references follow)",
+              "possible missing \"with Ada.Text_IO; use Ada.Text_IO\""
+            ],
+            "error_types": [
+              "undefined_identifier",
+              "missing_dependency"
+            ],
+            "error_categories": [
+              "Dependency",
+              "Dependency"
+            ],
+            "primary_error_type": "undefined_identifier",
+            "primary_category": "Dependency",
+            "test_result": "ERROR: No program found.",
+            "test_data": "{}",
+            "diff_from_previous": "",
+            "similarity_to_previous": 1.0,
+            "identical_to_previous": true
+          }
+        ],
+        "summary": {
+          "failed_at_iteration_0": true,
+          "first_compiled_iteration": null,
+          "ever_compiled": false,
+          "final_compiled": false,
+          "final_test_result": null,
+          "passed": false,
+          "category_path": [
+            "Dependency",
+            "Dependency",
+            "Dependency",
+            "Dependency",
+            "Dependency"
+          ],
+          "error_type_path": [
+            "undefined_identifier",
+            "undefined_identifier",
+            "undefined_identifier",
+            "undefined_identifier",
+            "undefined_identifier"
+          ],
+          "n_identical_resubmissions": 4
+        }
+      }
+    }
+  ]
+}

@@ -189,3 +189,29 @@ def extract_all_error_texts(compile_result: str) -> List[str]:
             return [text]
 
     return errors
+
+
+
+def extract_first_error(output: str) -> str | None:
+    # Handle both escaped \n and actual newlines
+    output = output.replace("\\n", "\n")
+
+    patterns = [
+        # C, Ada, Haskell, Java (file:line:column: error)
+        r"^(?:.*[/\\])?[^/\\\n]+:\d+(?::\d+)?:\s*(?:fatal )?error:.*$",
+
+        # Rust (error[E0433]: ...)
+        r"^error\[[A-Z]\d+\]:.*$",
+
+        # Rust (error: ...)
+        r"^error:\s*(?!aborting\b).*",
+    ]
+
+    for line in output.splitlines():
+        line = line.strip()
+
+        for pattern in patterns:
+            if re.match(pattern, line, re.IGNORECASE):
+                return line
+
+    return None

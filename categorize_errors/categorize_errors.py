@@ -50,6 +50,7 @@ def extract_all_error_texts(compile_result: str) -> List[str]:
     return []
 """
 
+
 def classify_error(error_text: str, error_patterns) -> str:
     text = error_text.lower()
 
@@ -64,7 +65,7 @@ def classify_error(error_text: str, error_patterns) -> str:
 
 
 def get_category(error_type: str, error_types_of_categoires) -> str:
-    return error_types_of_categoires.get(error_type, 'other')
+    return error_types_of_categoires.get(error_type, 'Other')
 
 
 def unique_preserve_order(items: List[str]) -> List[str]:
@@ -81,6 +82,17 @@ def is_item(item: Dict[str, Any], language: str) -> bool:
     return str(item.get("Language", "")).strip().lower() == language
 
 
+def create_category_list(error_types: List[str], error_types_of_categoires) -> List[str]:
+    categories = []
+
+    for error_type in error_types:
+        category = get_category(error_type, error_types_of_categoires)
+
+        if category != "" and category != None:
+            categories.append(category)
+
+    return categories
+
 def enrich_with_error_categories(item: Dict[str, Any], error_patterns, error_types_of_categoires) -> Dict[str, Any]:
     compile_result = str(item.get("Compile_Result", ""))
 
@@ -91,12 +103,18 @@ def enrich_with_error_categories(item: Dict[str, Any], error_patterns, error_typ
         categories: List[str] = []
         primary_error_type: Optional[str] = None
         primary_category = "no_error" if "compilation successful" in compile_result.lower() else "unknown"
+        primary_error_text: Optional[str] = None
     else:
         error_types = [classify_error(text, error_patterns) for text in error_texts]
-        error_types = unique_preserve_order(error_types)
-        categories = unique_preserve_order([get_category(error_type, error_types_of_categoires) for error_type in error_types])
+        #error_types = unique_preserve_order(error_types)
+        error_types = error_types  # Keep the order of error types as they appear
+        categories_list = create_category_list(error_types, error_types_of_categoires)
+        categories = categories_list
+        #categories = unique_preserve_order(categories_list)
+        #categories = unique_preserve_order([get_category(error_type, error_types_of_categoires) for error_type in error_types])
         primary_error_type = error_types[0]
-        primary_category = categories[0] if categories else "other"
+        primary_category = categories[0] if categories else "Other"
+        primary_error_text = get_error_lib.extract_first_error(compile_result)
 
     enriched = dict(item)
     enriched["compiler_error_texts"] = error_texts
@@ -104,6 +122,7 @@ def enrich_with_error_categories(item: Dict[str, Any], error_patterns, error_typ
     enriched["categories"] = categories
     enriched["primary_compiler_error_type"] = primary_error_type
     enriched["primary_category"] = primary_category
+    enriched["primary_error_text"] = primary_error_text
     enriched["has_compilation_error"] = len(error_texts) > 0
 
     return enriched
@@ -198,14 +217,43 @@ def count_unknown_compiler_errors_in_types(output_file: str) -> int:
 
 
 def main() -> None:
-    if len(sys.argv) != 2:
-        print("Usage: python flatten_and_categorize_iterations.py <language>")
-        sys.exit(1)
 
-    input_file = Path("../summarize_results/combined.json")
 
-    language = sys.argv[1]
-    output_file = Path(f"category_error/{language}.json")
+    base_dir ="category_error"
+
+    if len(sys.argv) != 3:
+        types = ["a", "b"]
+        language = ["ada", "c", "java", "haskell", "rust"]
+
+        #print("Usage: python3 flatten_and_categorize_iterations.py <language> <agent/baseline (a/b)>")
+        #ys.exit(1)
+
+        for t in types:
+            if t == "a":
+                a_or_b = "agent"
+            else:
+                a_or_b = "baseline"
+            for lang in language:
+                run_flatten_and_categorize(lang, a_or_b, base_dir)        
+
+    else:
+        if sys.argv[2] not in ("a", "b"):
+            print("Error: second argument must be 'a' or 'b'")
+            sys.exit(1)
+
+        if sys.argv[2] == "a":
+            a_or_b = "agent"
+        else:
+            a_or_b = "baseline"
+
+        run_flatten_and_categorize(sys.argv[1], a_or_b, base_dir)
+
+    
+def run_flatten_and_categorize(language: str, a_or_b: str, base_dir: str) -> None:
+
+    input_file = Path(f"../summarize_results/combined_{a_or_b}.json")
+
+    output_file = Path(f"{base_dir}/{language}_{a_or_b}.json")
 
     error_patterns, error_types_of_categoires = load_error_classification_config(language)
 
