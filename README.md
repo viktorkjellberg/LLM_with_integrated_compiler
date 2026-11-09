@@ -1,7 +1,7 @@
 This file explation how to recreate the experiment. It generates solutions in the chosen languages with the specified LLMs. If you run all files then you will get the generated solutions, all data for the tables and plots used in the paper.
 
 
-### Download and extract data 
+## Download and extract data 
 
 All data can be found in the release v1.0 in this repo. Download it and run:
 ```bash
@@ -10,7 +10,7 @@ All data can be found in the release v1.0 in this repo. Download it and run:
 This will extract and place the data under the right folders. If you want to re-run all the files and generate new data, follow the steps in the subsequent section.
 
 
-### Run the LLMs for agents and baselines
+## Run the LLMs for agents and baselines
 
 Generate the solution for each task in all tasks with the settings in ollama_server.yaml, where the programming languages, models and servers are specified.
 In these the LLMs have access to iteartive compiler feedback for the chosen language and generates candidate solutions unitl either the number of iterations hit the max value of 5 or the solution candidate compiles. If the data already exist the genration will not generate new data.
@@ -31,7 +31,7 @@ python3 update_baseline_output.py output_baseline output_baseline
 
 The baseline does not run the compiler while generating and just iterate 5 times but to allow a fair comparision run_eval_on_baseline_tasks.py adds compiler results to each result files and update_baseline_output updates the result so that it only include the iterations until a compiled solution was generated.
 
-### Evaluate output
+## Evaluate output
 
 Evaluate all generated solutions by compiling the solutions and running the test cases. The script runs multiple evaluations paralell.
 
@@ -49,7 +49,7 @@ python3 combine_into_one_json.py ../eval_agent/ ../output_agent/agentic_individu
 python3 combine_into_one_json.py ../eval_baseline/ ../output_baseline/agentic_individual_tasks/ -o combined_baseline.json
 ```
 
-### Categorize Errors
+## Categorize Errors
 
 Categorize all errors from all iterations for baseline and agents based on each languages based on the categorization from settings_error_types. The results are saved in category_error in a file each for agents and baselines.
 
@@ -58,7 +58,7 @@ cd categorize_errors
 python3 categorize_errors.py
 ```
 
-### Analysis of results
+## Analysis of results
 
 Cleanup script that creates new files over errors in new_files
 
